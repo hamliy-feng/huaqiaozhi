@@ -298,6 +298,12 @@
     const grid=definitionGrid(detailEntries(type,item));if(grid.children.length)body.appendChild(grid);
     const summary=item.content||item.history||item.intro||item.curator_note||item.summary||item.purpose;
     if(summary){const labels={event:'事件正文',org:'组织概况',place:'地点简介',topic:'策展说明'};body.append(text('h3',labels[type]||'内容摘要','subheading'),text('p',summary,'summary'));}
+    const photo=item?.cover_url;
+    if(photo && type!=='person'){
+      const figure=document.createElement('figure');figure.className='hqz-detail-cover';
+      const img=document.createElement('img');img.src=photo;img.alt=titleOf(item)+'相关图片';img.loading='lazy';
+      figure.appendChild(img);panel.insertBefore(figure,panel.firstChild);
+    }
     panel.appendChild(body);return panel;
   }
   function buildPersonHighlights(item){

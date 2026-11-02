@@ -26,7 +26,9 @@
    let shell=container.querySelector('.hqz-person-place-panel');
    if(!shell){shell=document.createElement('section');shell.className='hqz-person-place-panel';shell.setAttribute('role','region');container.appendChild(shell)}
    const sorted=[...new Set(ids)].sort((a,b)=>String(names.get(a)||'').localeCompare(String(names.get(b)||''),'zh'));
-   shell.innerHTML='<div class="hqz-map-panel-head"><div><strong>'+esc(title)+'</strong><small>'+sorted.length+'位关联人物</small></div><button type="button" aria-label="关闭关联人物名单">×</button></div>'+
+   const selectedPlace=[...byId.values()].find(v=>v.name===title);
+   const placePhoto=selectedPlace?.cover_url?'<img class="hqz-map-place-photo" loading="lazy" src="'+esc(selectedPlace.cover_url)+'" alt="'+esc(title)+'相关风貌">':'';
+   shell.innerHTML=placePhoto+'<div class="hqz-map-panel-head"><div><strong>'+esc(title)+'</strong><small>'+sorted.length+'位关联人物</small></div><button type="button" aria-label="关闭关联人物名单">×</button></div>'+
    (subtitle?'<p class="hqz-map-panel-note">'+esc(subtitle)+'</p>':'')+
    '<input type="search" aria-label="筛选关联人物" placeholder="搜索姓名..." class="hqz-person-map-filter">'+
    '<div class="hqz-person-map-list"></div>';
@@ -91,6 +93,7 @@
       ]};
      chart.setOption(option);
      controls(frame,chart,host,nodes);
+     if(params.has('map'))panel(frame,selected.name,selected.personIds,names,'点击姓名查看人物档案');
      chart.on('click',p=>{
        if(p.seriesType==='scatter'&&p.data?.id){
          selected=byId.get(p.data.id);

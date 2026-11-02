@@ -76,9 +76,9 @@
       const [person,org,event]=await Promise.all(['person','org','event'].map(t=>fetch('data/'+t+'-index.json').then(r=>r.json())));
       function list(which,items){const host=$('[data-hqz-feature-'+which+']');if(!host)return;host.innerHTML=items.map(item=>{
         const n=item.name||item.title||'',detail=(item.bio_short||item.summary||'').replace(/(?:资料出处|来源)[：:].*$/u,'').slice(0,76);
-        return '<a class="hqz-feature-row" href="'+which+'.html?id='+encodeURIComponent(item.id)+'"><span class="hqz-feature-logo">'+e(n.slice(0,1))+'</span><span><strong>'+e(n)+'</strong><small>'+e(detail)+'</small></span></a>'
+        return '<a class="hqz-feature-row" href="'+which+'.html?id='+encodeURIComponent(item.id)+'"><span class="hqz-feature-logo">'+(item.cover_url?'<img loading="lazy" src="'+e(item.cover_url)+'" alt="'+e(n)+'">':e(n.slice(0,1)))+'</span><span><strong>'+e(n)+'</strong><small>'+e(detail)+'</small></span></a>'
       }).join('')}
-      const priority=['陈宜禧','李传别','李金水','官光厚'];
+      const priority=['陈宜禧','伍连德','雷洁琼','林梧桐'];
       const featured=priority.map(n=>person.find(p=>p.name===n)).filter(Boolean).slice(0,4);
       list('person', [...featured,...person.filter(x=>!featured.some(y=>x.id===y.id))].slice(0,4));
       list('org', org.filter(o=>/会馆|公会|商会/.test(o.name)).slice(0,2));

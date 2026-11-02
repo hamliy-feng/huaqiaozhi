@@ -1,17 +1,10 @@
 {
-  "site_release": "site_20261102_190620_310673",
-  "entities": {
+  "updated_at": "2026-11-02T13:22:00.746377+00:00",
+  "counts": {
     "person": 891,
     "org": 21,
     "event": 83,
     "place": 140
   },
-  "map": {
-    "places": 36,
-    "linked_persons": 599,
-    "undirected_links": 103
-  },
-  "files": 1175,
-  "provenance_fields_removed_from_json_files": 1139,
-  "qiaopi_original_present": false
+  "public_image_missing": true
 }
