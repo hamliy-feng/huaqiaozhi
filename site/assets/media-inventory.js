@@ -4,15 +4,15 @@
  const $=id=>document.getElementById(id);
  const el=(tag,cls,str)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(str!==undefined)e.textContent=str;return e};
  const isReal=x=>!!x.photo && x.media_kind!=='editorial_card' && x.type!=='event';
- const status=x=>x.type==='event'?'不配图':isReal(x)?'真实来源图片':x.media_kind==='editorial_card'?'档案图卡（非历史照片）':'暂无可核实图片';
+ const status=x=>x.type==='event'?'不配图':isReal(x)?'真实来源图片':'暂无可核实图片';
  function show(){
   const q=$('q').value.toLowerCase().trim(),kind=$('kind').value,stat=$('stat').value;
-  const select=x=>stat==='real'?isReal(x):stat==='editorial_card'?x.media_kind==='editorial_card':
+  const select=x=>stat==='real'?isReal(x):
    stat==='missing'?x.type!=='event'&&!x.photo:stat==='not_applicable'?x.type==='event':true;
   const matches=rows.filter(x=>(!kind||x.type===kind)&&(!q||(x.name+' '+x.id).toLowerCase().includes(q))&&select(x));
-  const real=rows.filter(isReal).length,cards=rows.filter(x=>x.media_kind==='editorial_card').length;
+  const real=rows.filter(isReal).length;
   const missing=rows.filter(x=>x.type!=='event'&&!x.photo).length;
-  $('count').textContent='共 '+rows.length+' 个对象 · 当前 '+matches.length+' 个 · 真实来源图片 '+real+' · 档案图卡 '+cards+' · 缺图 '+missing+' · 事件不配图 '+rows.filter(x=>x.type==='event').length;
+  $('count').textContent='共 '+rows.length+' 个对象 · 当前 '+matches.length+' 个 · 真实来源图片 '+real+' · 缺图 '+missing+' · 事件不配图 '+rows.filter(x=>x.type==='event').length;
   const f=document.createDocumentFragment();
   matches.forEach(x=>{
    const card=el('article','item'),box=x.photo?el('img','pic'):el('div','pic',types[x.type][0]);

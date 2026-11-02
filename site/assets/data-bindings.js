@@ -44,6 +44,7 @@
     container?.querySelector('[data-empty-state]')?.classList.add('error-state');
   }
   function addImage(parent,item,kind='image'){
+    if(item?.cover_kind==='editorial_card'||item?.is_placeholder)return null;
     const value=item?.portrait?.render_url||item?.emblem?.render_url||item?.emblem||item?.cover?.render_url||item?.cover||item?.scan_preview||item?.image?.render_url;
     if(!value)return null;
     try{
@@ -51,6 +52,17 @@
       if(!['http:','https:'].includes(url.protocol)&&!String(value).startsWith('/api/'))return null;
       const img=document.createElement('img');img.src=value;img.alt=`${titleOf(item)}${kind}`;parent.appendChild(img);return img;
     }catch{return null}
+  }
+  function surnameOf(item){
+    const name=String(titleOf(item)||'').trim();
+    const doubles=['欧阳','司马','诸葛','上官','司徒','东方','公孙','夏侯','皇甫','尉迟','长孙','宇文','慕容'];
+    return doubles.find(s=>name.startsWith(s))||[...name][0]||'人';
+  }
+  function surnameAvatar(item){
+    const avatar=document.createElement('span');
+    avatar.className='hqz-surname-avatar';
+    avatar.textContent=surnameOf(item);
+    avatar.setAttribute('aria-label','暂无人物肖像');return avatar;
   }
   function chipRow(values=[]){
     const row=document.createElement('div');row.className='chip-row';
@@ -73,7 +85,9 @@
   }
   function buildRecord(type,item){
     const article=document.createElement('article');article.className=`record-item ${type==='event'||type==='org'?'landscape':''}`;article.dataset.entityId=item.id;
-    const media=addImage(article,item);if(!media)article.classList.add('no-media');
+    const media=addImage(article,item);
+    if(!media){if(type==='person'){article.appendChild(surnameAvatar(item));article.classList.add('surname-fallback');}
+      else article.classList.add('no-media');}
     const copy=document.createElement('div');copy.appendChild(text('h3',titleOf(item)));
     const displayType=item.type_label||(type==='org'||type==='place'?item.type:null);
     const personTags=type==='person'?(item.display_tags||item.tags||item.occupation||[]).slice(0,2):[];
@@ -262,7 +276,7 @@
       const hero=document.createElement('div');hero.className='person-v2-hero';
       const portraitBox=document.createElement('div');portraitBox.className='person-v2-portrait';
       const portrait=addImage(portraitBox,item,'人物肖像');
-      if(!portrait){portraitBox.classList.add('portrait-empty');portraitBox.appendChild(text('span',(titleOf(item)||'人').slice(0,1),'portrait-initial'));}
+      if(!portrait){portraitBox.classList.add('portrait-empty');portraitBox.appendChild(text('span',surnameOf(item),'portrait-initial'));}
       const body=document.createElement('div');body.className='person-v2-headcopy';
       const titleLine=document.createElement('div');titleLine.className='person-title-line';
       titleLine.append(text('h2',titleOf(item),'detail-name'));
@@ -539,7 +553,7 @@
         empty(panel);
         if(!response.items.length){showEmpty(panel,`未找到“${q}”的真实数据`);empty(pagination);return}
         response.items.filter(hit=>PUBLIC_SEARCH_TYPES.includes(hit.type)).forEach(hit=>{
-          const {type,item}=hit;const row=document.createElement('article');row.className='search-result';row.dataset.type=type;addImage(row,item);
+          const {type,item}=hit;const row=document.createElement('article');row.className='search-result';row.dataset.type=type;if(!addImage(row,item)&&type==='person')row.appendChild(surnameAvatar(item));
           const copy=document.createElement('div');copy.append(text('h3',titleOf(item)),text('p',hit.snippet||item.bio_short||item.summary||item.intro||item.subtitle||'暂无摘要'));
           copy.appendChild(text('div',typeLabel[type],'meta-line'));
           const href=detailHref(type,item,hit.evidence_id);if(href){const link=text('a',hit.evidence_id?'查看条目与依据':'查看条目','btn btn-outline btn-small');link.href=href;copy.appendChild(link)}
