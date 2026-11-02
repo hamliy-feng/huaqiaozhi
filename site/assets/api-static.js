@@ -19,6 +19,8 @@
     if(params.type)rows=rows.filter(x=>String(x.type||x.type_label||'')===String(params.type));
     const sourceBook=(params.source_book||(type==='person'?new URLSearchParams(location.search).get('source_book'):'')||'').trim();
     if(sourceBook)rows=rows.filter(x=>String(x.source_book||'')===sourceBook);
+    if(type==='person'&&params.sort!=='name')rows.sort((a,b)=>
+      Number(b.cover_kind==='photo_or_recorded_source')-Number(a.cover_kind==='photo_or_recorded_source'));
     if(params.sort==='name')rows.sort((a,b)=>(a.name||a.title||'').localeCompare(b.name||b.title||'','zh'));
     const page=Math.max(1,Number(params.page)||1),size=Math.max(1,Math.min(200,Number(params.page_size)||20));
     return {items:rows.slice((page-1)*size,page*size),total:rows.length,page,page_size:size,meta:{source_mode:'teacher_preview'},data_mode:'teacher_preview'};

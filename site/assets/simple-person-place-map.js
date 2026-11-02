@@ -68,12 +68,19 @@
      if(params.has('map'))selected=byId.get(params.get('map'))||selected;
      const chart=echarts.init(host,null,{renderer:'canvas'});
      function selectedLines(){
-       return edges.filter(l=>l.fromPlaceId===selected.id||l.toPlaceId===selected.id).map(l=>({
+       // Show up to 48 strongest unique associations plus all links touching the chosen place.
+       // Each edge already contains genuine, deduplicated shared person IDs; never invent routes.
+       const visible=new Map();
+       edges.slice(0,48).forEach(edge=>visible.set([edge.fromPlaceId,edge.toPlaceId].sort().join('|'),edge));
+       edges.filter(edge=>edge.fromPlaceId===selected.id||edge.toPlaceId===selected.id)
+            .forEach(edge=>visible.set([edge.fromPlaceId,edge.toPlaceId].sort().join('|'),edge));
+       return [...visible.values()].map(l=>({
         name:l.fromLabel+' — '+l.toLabel,coords:[byId.get(l.fromPlaceId).coordinates,byId.get(l.toPlaceId).coordinates],
         fromPlaceId:l.fromPlaceId,toPlaceId:l.toPlaceId,personIds:l.personIds,count:l.count
        }));
      }
      const points=nodes.map(p=>({name:p.name,value:[...p.coordinates,p.person_count],id:p.id,personIds:p.personIds}));
+     const motionAllowed=!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
      const option={animation:false,
       tooltip:{trigger:'item',backgroundColor:'#fffaf0',borderColor:'#d5b58c',textStyle:{color:'#5b422b',fontSize:12},
         formatter:p=>p.seriesType==='lines'?esc(p.data?.name)+'<br>'+Number(p.data?.count||0)+'位共同关联人物 · 点击查看':esc(p.name)+'<br>'+Number(p.data?.value?.[2]||0)+'位关联人物 · 点击查看'},
@@ -82,8 +89,11 @@
         itemStyle:{areaColor:'#eaddc5',borderColor:'#f6eddd',borderWidth:.5},emphasis:{itemStyle:{areaColor:'#d9c39d'}}},
       series:[
        {type:'lines',coordinateSystem:'geo',z:2,silent:false,large:false,
-        lineStyle:{color:'#a44d38',opacity:.55,width:1.3,curveness:.23},
-        emphasis:{lineStyle:{width:2.6,opacity:1}},data:selectedLines()},
+        lineStyle:{color:'#a44d38',opacity:.34,width:1.2,curveness:.23},
+        emphasis:{lineStyle:{width:2.6,opacity:.9}},
+        // ECharts lines effect: exactly one moving highlight per distinct edge.
+        effect:{show:motionAllowed,period:25,trailLength:.07,symbol:'circle',symbolSize:3.5,loop:true},
+        data:selectedLines()},
        {type:'scatter',coordinateSystem:'geo',z:5,data:points,
         symbolSize:v=>Math.max(6,Math.min(15,7+Math.sqrt(v[2])*.32)),
         itemStyle:{color:'#a44d38',borderColor:'#fffaf0',borderWidth:1.3},

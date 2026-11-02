@@ -424,10 +424,19 @@
     const form=document.querySelector('.filter-panel');
     if(!list||!detailHost)return;
     let currentPage=1;
+    // Consume only the incoming link once; subsequent paging/search follows the user's action.
+    let incomingId=new URLSearchParams(location.search).get('id');
     async function load(page=1){
       currentPage=page;showLoading(list);showLoading(detailHost);
       try{
-        const response=await window.HQZ.api.list(type,filterParams(form,page));const items=itemsOf(response);updateResultMeta(response.total);
+        const response=await window.HQZ.api.list(type,filterParams(form,page));
+        let items=itemsOf(response);updateResultMeta(response.total);
+        const linkId=incomingId;incomingId=null;
+        const linked=linkId?await window.HQZ.api.detail(type,linkId):null;
+        if(linked){
+          // The linked record may live on page 26; pin it to the visible first row.
+          items=[linked,...items.filter(row=>String(row.id)!==String(linked.id))].slice(0,Math.max(20,items.length));
+        }
         if(!items.length){showEmpty(list,'暂无符合条件的数据');showEmpty(detailHost,'当前数据模式暂无详情');renderPagination(pagination,response,load);return}
         empty(list);
         items.forEach((item,index)=>{
@@ -442,8 +451,7 @@
           list.appendChild(card);
         });
         renderPagination(pagination,response,load);
-        const id=new URLSearchParams(location.search).get('id');
-        const first=id?await window.HQZ.api.detail(type,id):await window.HQZ.api.detail(type,items[0].id);
+        const first=linked||await window.HQZ.api.detail(type,items[0].id);
         if(first)await renderDetail(type,first,detailHost);else showEmpty(detailHost,'记录不存在或不可见');
       }catch(error){showError(list,error);showError(detailHost,error)}
     }

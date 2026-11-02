@@ -15,7 +15,7 @@
   const labels = {person:'人物',org:'组织',event:'事件',place:'地点',topic:'专题',search:'检索',review:'审阅'};
   const links = [
     ['index.html','home','首页'],['person.html','person','人物'],['org.html','org','组织'],
-    ['event.html','event','事件'],['place.html','place','地点'],['qiaopi.html','qiaopi','侨批'],['search.html','search','检索']
+    ['event.html','event','事件'],['place.html','place','地点'],['search.html','search','检索']
   ];
   const header = document.querySelector('[data-site-header]');
   if (header) header.innerHTML = `<nav class="site-nav" aria-label="主导航"><div class="nav-shell">
@@ -27,7 +27,7 @@
   const footer = document.querySelector('[data-site-footer]');
   if (footer) footer.innerHTML = `<footer><div class="wrap"><div class="footer-grid">
     <div><div class="footer-brand">华侨志数据库</div><p>五书人物、组织、事件与地点资料</p></div>
-    <div><h4>浏览</h4><a href="person.html">人物</a><a href="org.html">组织</a><a href="event.html">事件</a><a href="place.html">地点</a><a href="qiaopi.html">侨批</a></div>
+    <div><h4>浏览</h4><a href="person.html">人物</a><a href="org.html">组织</a><a href="event.html">事件</a><a href="place.html">地点</a></div>
     <div><h4>工具</h4><a href="search.html">全库检索</a></div>
   </div><div class="copyright">© 2026 华侨志数据库</div></div></footer>`;
 
