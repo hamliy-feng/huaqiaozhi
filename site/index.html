@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>华侨志数据库 · 记录全球华侨历史，传承中华文化记忆</title>
+<style>
+:root{
+  --paper:#f6f0e2;
+  --paper-2:#efe6d2;
+  --ink:#3a2b16;
+  --ink-soft:#6b5a3e;
+  --brown:#6d4c24;
+  --brown-deep:#4a3315;
+  --gold:#b08d57;
+  --gold-soft:#d8c39a;
+  --line:rgba(109,76,36,.22);
+  --serif:"Noto Serif SC","Songti SC","STSong",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:var(--gold);color:#fff}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1220px;margin:0 auto;padding:0 32px}
+
+/* ============ 顶部导航（浮于首屏） ============ */
+.topnav{
+  position:fixed;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:center;justify-content:flex-end;
+  padding:20px 48px;
+  background:linear-gradient(to bottom,rgba(246,240,226,.94),rgba(246,240,226,.78) 72%,transparent);
+  backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand .seal{
+  width:46px;height:46px;border-radius:50%;
+  border:2px solid var(--brown);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(246,240,226,.6);backdrop-filter:blur(4px);
+  flex:none;
+}
+.brand .seal svg{width:26px;height:26px;fill:var(--brown)}
+.brand-name{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--brown-deep);letter-spacing:2px}
+.brand-sub{font-size:11px;color:var(--ink-soft);letter-spacing:1px;margin-top:-2px}
+.nav-links{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--brown-deep)}
+.nav-links a{padding:6px 10px;border-radius:4px;transition:.25s}
+.nav-links a:hover{background:rgba(109,76,36,.1)}
+.nav-links .sep{color:var(--gold);opacity:.7}
+.nav-links .lang{font-weight:600;border-bottom:2px solid var(--brown)}
+
+/* ============ a2 首屏 Hero（图二样式） ============ */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:url("assets/hero-harbor.webp") center bottom/cover no-repeat;
+  overflow:hidden;
+}
+.hero::before{ /* 上部米白渐变，保证标题可读 */
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,
+    rgba(243,234,214,.92) 0%,
+    rgba(243,234,214,.55) 26%,
+    rgba(243,234,214,.12) 48%,
+    rgba(60,40,15,.06) 78%,
+    rgba(50,34,12,.22) 100%);
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:2;text-align:center;padding:80px 24px 40px;width:100%;max-width:900px;margin-bottom:9vh}
+.hero h1{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(44px,7.2vw,88px);
+  letter-spacing:.18em;color:var(--brown-deep);
+  text-shadow:0 2px 24px rgba(246,240,226,.8);
+  margin-bottom:58px;
+}
+.hero .slogan{
+  font-family:var(--serif);font-size:clamp(15px,2vw,21px);
+  letter-spacing:.32em;color:var(--ink-soft);margin-top:18px;
+}
+.hero .divider{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  margin:26px auto 38px;max-width:420px;
+}
+.hero .divider::before,.hero .divider::after{
+  content:"";height:1px;flex:1;background:linear-gradient(to right,transparent,var(--gold),transparent);
+}
+.hero .divider i{width:9px;height:9px;background:var(--gold);transform:rotate(45deg)}
+
+/* 搜索框（懒加载：默认窄横条，悬停/聚焦平滑展开并滑出按钮） */
+.searchbar{
+  display:flex;align-items:stretch;
+  background:#fffdf7;border:1px solid var(--gold-soft);
+  border-radius:99px;overflow:hidden;
+  box-shadow:0 10px 30px rgba(74,51,21,.16);
+  max-width:520px;margin:0 auto;
+  transition:max-width .55s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-radius .4s;
+}
+.searchbar:hover,.searchbar:focus-within{
+  max-width:820px;border-radius:8px;
+  box-shadow:0 16px 48px rgba(74,51,21,.26);
+}
+.searchbar .input-box{flex:1;display:flex;align-items:center;gap:10px;padding:0 22px;min-width:0}
+.searchbar .input-box svg{width:18px;height:18px;stroke:var(--gold);flex:none}
+.searchbar input{
+  flex:1;border:none;outline:none;background:transparent;
+  font-size:15px;padding:15px 0;color:var(--ink);min-width:0;font-family:var(--sans);
+}
+.searchbar input::placeholder{color:#a8977a}
+.btn-search,.btn-adv{
+  max-width:0;padding:0;opacity:0;overflow:hidden;white-space:nowrap;
+  transition:max-width .5s cubic-bezier(.22,1,.36,1),opacity .4s .08s,padding .5s cubic-bezier(.22,1,.36,1);
+}
+.searchbar:hover .btn-search,.searchbar:focus-within .btn-search{max-width:150px;padding:0 38px;opacity:1}
+.searchbar:hover .btn-adv,.searchbar:focus-within .btn-adv{max-width:140px;padding:0 20px;opacity:1}
+.btn-search{
+  border:none;cursor:pointer;font-family:var(--serif);
+  background:var(--brown-deep);color:#f3e9d2;
+  font-size:16px;letter-spacing:6px;
+}
+.btn-search:hover{background:var(--brown)}
+.btn-adv{
+  border:none;border-left:1px solid var(--gold-soft);cursor:pointer;
+  background:#f7efdd;color:var(--brown);font-size:14px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-family:var(--sans);
+}
+.btn-adv:hover{background:#efe3c8}
+.btn-adv svg{width:15px;height:15px;stroke:var(--brown);flex:none}
+
+/* 热门搜索 */
+.hot-tags{margin-top:20px;font-size:13px;color:var(--ink-soft);display:flex;flex-wrap:wrap;justify-content:center;gap:8px;align-items:center}
+.hot-tags span{letter-spacing:2px;margin-right:4px}
+.hot-tags a{
+  padding:3px 12px;border:1px solid rgba(109,76,36,.35);border-radius:99px;
+  background:rgba(246,240,226,.55);backdrop-filter:blur(3px);
+  transition:.25s;cursor:pointer;
+}
+.hot-tags a:hover{background:var(--brown-deep);color:#f3e9d2;border-color:var(--brown-deep)}
+
+/* a8-mini：首屏浮动统计条 */
+.hero-stats{
+  position:relative;z-index:2;margin-top:auto;width:100%;
+  background:rgba(58,40,16,.42);backdrop-filter:blur(8px);
+  border-top:1px solid rgba(216,195,154,.35);
+}
+.hero-stats .wrap{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  max-width:1120px;padding:22px 32px 24px;
+}
+.hstat{min-height:104px;text-align:center;color:#efe4c8;padding:8px 24px;border-left:1px solid rgba(216,195,154,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.hstat:first-child{border-left:none}
+.hstat b{font-family:var(--serif);font-size:clamp(32px,3.2vw,46px);line-height:1.05;font-weight:700;display:block;letter-spacing:.04em}
+.hstat span{font-family:var(--serif);font-size:15px;letter-spacing:.28em;line-height:1.5;opacity:.9}
+.hstat em{font-style:normal;font-size:10px;letter-spacing:.16em;opacity:.52;display:block}
+
+.scroll-hint{
+  position:absolute;bottom:96px;left:50%;transform:translateX(-50%);z-index:3;
+  color:#f3e9d2;font-size:11px;letter-spacing:4px;opacity:.85;text-align:center;
+}
+.scroll-hint::after{
+  content:"";display:block;width:1px;height:34px;margin:8px auto 0;
+  background:linear-gradient(to bottom,#f3e9d2,transparent);
+  animation:drip 1.8s ease-in-out infinite;
+}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ============ 通用板块 ============ */
+section.block{padding:84px 0}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;gap:20px;flex-wrap:wrap}
+.sec-title{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--brown-deep);letter-spacing:4px;display:flex;align-items:center;gap:14px}
+.sec-title::before{content:"";width:6px;height:30px;background:var(--brown-deep);border-radius:2px}
+.sec-more{font-size:13px;color:var(--ink-soft);letter-spacing:1px;transition:.25s;white-space:nowrap}
+.sec-more:hover{color:var(--brown-deep)}
+.sec-more i{font-style:normal;margin-left:4px}
+
+/* ============ a8 数据库统计（放大独立板块） ============ */
+.stats{background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);border-bottom:1px solid var(--line)}
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.stat-card{
+  background:#fffdf7;border:1px solid var(--gold-soft);border-radius:10px;
+  padding:30px 14px 24px;text-align:center;position:relative;overflow:hidden;
+  transition:transform .3s,box-shadow .3s;
+}
+.stat-card:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(74,51,21,.16)}
+.stat-card::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(to right,var(--gold),var(--brown-deep));
+  opacity:0;transition:.3s;
+}
+.stat-card:hover::after{opacity:1}
+.stat-card .ico{width:40px;height:40px;margin:0 auto 12px}
+.stat-card .ico svg{width:100%;height:100%;stroke:var(--brown);fill:none;stroke-width:1.4}
+.stat-card b{font-family:var(--serif);font-size:34px;font-weight:900;color:var(--brown-deep);display:block;letter-spacing:1px}
+.stat-card span{font-size:14px;letter-spacing:4px;color:var(--ink-soft)}
+.intro{
+  margin-top:44px;display:grid;grid-template-columns:150px 1fr;gap:26px;align-items:center;
+  background:rgba(255,253,247,.7);border:1px dashed var(--gold-soft);border-radius:10px;padding:28px 32px;
+}
+.intro h3{font-family:var(--serif);font-size:20px;color:var(--brown-deep);letter-spacing:6px;white-space:nowrap;border-right:2px solid var(--gold);padding-right:24px;line-height:1.8}
+.intro p{font-size:14.5px;color:var(--ink-soft);text-align:justify}
+.intro p b{color:var(--brown-deep)}
+
+/* ============ a3 分类入口 ============ */
+.cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.cat-card{
+  background:linear-gradient(165deg,#5c401d 0%,#46300f 55%,#33230c 100%);
+  border:1px solid rgba(216,195,154,.4);border-radius:10px;
+  padding:34px 12px 26px;text-align:center;cursor:pointer;
+  transition:.35s;position:relative;overflow:hidden;
+}
+.cat-card::before{ /* 复用统计条的金色顶线元素，悬停浮现 */
+  content:"";position:absolute;top:0;left:18%;right:18%;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  opacity:0;transition:.35s;
+}
+.cat-card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 18px 38px rgba(58,42,19,.35)}
+.cat-card:hover::before{opacity:1}
+.cat-card .ico{
+  width:62px;height:62px;margin:0 auto 16px;border-radius:50%;
+  border:1.5px solid rgba(216,195,154,.55);display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,rgba(216,195,154,.22),rgba(216,195,154,.06));
+  transition:.35s;
+}
+.cat-card:hover .ico{background:radial-gradient(circle at 35% 30%,#d8c39a,#b08d57);border-color:#d8c39a;transform:scale(1.06)}
+.cat-card .ico svg{width:28px;height:28px;stroke:#e9dcbc;fill:none;stroke-width:1.5;transition:.35s}
+.cat-card:hover .ico svg{stroke:#33230c}
+.cat-card h4{font-family:var(--serif);font-size:19px;letter-spacing:6px;color:#f0e4c6;margin-bottom:8px}
+.cat-card p{font-size:12px;color:rgba(216,195,154,.85);letter-spacing:1px;line-height:1.7}
+
+/* ============ a4 精选专题 ============ */
+.topics{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.topics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.topic-card{
+  background:#fffdf7;border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  transition:.35s;cursor:pointer;
+}
+.topic-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(74,51,21,.18)}
+.topic-card .thumb{height:190px;overflow:hidden;position:relative}
+.topic-card .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.topic-card:hover .thumb img{transform:scale(1.07)}
+.topic-card .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(58,40,16,.28),transparent 55%)}
+.topic-card .body{padding:20px 22px 24px}
+.topic-card h4{font-family:var(--serif);font-size:18px;color:var(--brown-deep);letter-spacing:2px;margin-bottom:8px}
+.topic-card p{font-size:13px;color:var(--ink-soft);height:42px;overflow:hidden;margin-bottom:12px}
+.topic-card .count{font-size:12px;color:var(--gold);letter-spacing:1px;border-top:1px dashed var(--gold-soft);padding-top:10px}
+
+/* ============ a6 地图概览 ============ */
+.map-shell{
+  background:#fffdf7;border:1px solid var(--gold-soft);border-radius:12px;
+  padding:18px 18px 8px;box-shadow:0 10px 34px rgba(74,51,21,.1);
+}
+#worldMap{width:100%;height:560px}
+.map-fallback{
+  height:560px;display:none;align-items:center;justify-content:center;
+  color:var(--ink-soft);font-size:14px;letter-spacing:2px;text-align:center;padding:0 30px;
+}
+.map-legend{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:14px 0 12px;font-size:12px;color:var(--ink-soft);letter-spacing:1px}
+.map-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--brown);margin-right:6px;opacity:.85}
+
+/* ============ a9 页脚 ============ */
+footer{background:#3a2a13;color:#cdbb97;padding:56px 0 30px}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1.2fr 1fr;gap:44px;padding-bottom:36px;border-bottom:1px solid rgba(205,187,151,.2)}
+.foot-brand h3{font-family:var(--serif);font-size:22px;letter-spacing:3px;color:#efe4c8;margin-bottom:6px}
+.foot-brand p{font-size:12px;letter-spacing:2px;opacity:.75}
+.foot-col h5{font-size:14px;letter-spacing:3px;color:#efe4c8;margin-bottom:14px;font-weight:500}
+.foot-col p,.foot-col a{display:block;font-size:13px;opacity:.8;margin-bottom:8px;transition:.25s}
+.foot-col a:hover{opacity:1;color:#fff}
+.foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:24px;font-size:12px;opacity:.65;letter-spacing:1px}
+
+/* ============ Toast ============ */
+.toast{
+  position:fixed;left:50%;bottom:46px;transform:translate(-50%,20px);
+  background:rgba(58,42,19,.92);color:#f3e9d2;font-size:13.5px;letter-spacing:1px;
+  padding:12px 26px;border-radius:8px;z-index:99;opacity:0;pointer-events:none;
+  transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ============ 响应式 ============ */
+@media (max-width:1024px){
+  .stats-grid,.cats-grid{grid-template-columns:repeat(3,1fr)}
+  .topics-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-stats .wrap{grid-template-columns:repeat(2,1fr)}
+  .hstat:nth-child(odd){border-left:none}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .topnav{padding:18px 20px}
+  .brand-sub{display:none}
+  .nav-links{font-size:12px;gap:2px}
+  .stats-grid,.cats-grid{grid-template-columns:repeat(2,1fr)}
+  .topics-grid{grid-template-columns:1fr}
+  .hero-stats .wrap{grid-template-columns:repeat(2,1fr);padding-top:12px;padding-bottom:12px}
+  .btn-search{padding:0 22px;letter-spacing:3px}
+  .btn-adv{padding:0 14px}
+  .intro{grid-template-columns:1fr}
+  .intro h3{border-right:none;border-bottom:2px solid var(--gold);padding:0 0 10px}
+  #worldMap{height:420px}
+  .scroll-hint{display:none}
+  .wrap{padding:0 20px}
+  section.block{padding:60px 0}
+}
+</style>
+<link rel="stylesheet" href="assets/site-enhance.css"><link rel="stylesheet" href="assets/site-enhance-v4.css"><link rel="stylesheet" href="assets/simple-person-place-map.css"></head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="topnav">
+  <div class="nav-links">
+    <a href="about.html">关于</a><span class="sep">|</span>
+    
+    <a href="javascript:void(0)" onclick="demoTip('English 版本')">EN</a><span class="sep">/</span>
+    <a href="javascript:void(0)" class="lang">简体</a><span class="sep">/</span>
+    <a href="javascript:void(0)" onclick="demoTip('繁體版本')">繁體</a>
+  </div>
+</nav>
+
+<!-- a2 首屏 -->
+<header class="hero" id="top">
+  <div class="hero-inner">
+    <h1>华侨志数据库</h1>
+    <div class="searchbar">
+      <div class="input-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="kw" type="text" placeholder="请输入人名、事件、组织、地点等关键词" onkeydown="if(event.key==='Enter')doSearch()">
+      </div>
+      <button class="btn-search" onclick="doSearch()">搜索</button>
+      <button class="btn-adv" onclick="location.href='search.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        高级搜索
+      </button>
+    </div>
+  </div>
+
+  <!-- a8-mini 首屏动态统计条 -->
+  <div class="hero-stats">
+    <div class="wrap">
+      <div class="hstat"><a class="hqz-hstat-link" href="person.html" aria-label="查看891条人物记录"><b data-count="891">0</b><span>人物</span><em>PERSON</em></a></div>
+      <div class="hstat"><a class="hqz-hstat-link" href="org.html" aria-label="查看21条组织记录"><b data-count="21">0</b><span>组织</span><em>ORG</em></a></div>
+      <div class="hstat"><a class="hqz-hstat-link" href="event.html" aria-label="查看83条事件记录"><b data-count="83">0</b><span>事件</span><em>EVENT</em></a></div>
+      <div class="hstat"><a class="hqz-hstat-link" href="place.html" aria-label="查看140条地点记录"><b data-count="140">0</b><span>地点</span><em>PLACE</em></a></div>
+    </div>
+  </div>
+</header>
+
+<!-- 2026-11-02 内容改版：所有入口可跳转；下方是当前实有数据栏目 -->
+<section class="hqz-showcase">
+  <div class="hqz-shell">
+    <div class="hqz-section-head"><h2>核心内容</h2><a href="search.html">浏览全部资料 →</a></div>
+    <div class="hqz-core-grid">
+      <a class="hqz-core-card" href="person.html"><div class="hqz-core-art">人</div><div><h3>人物</h3><p>891条 · 传记档案</p></div><i class="hqz-core-arrow">›</i></a>
+      <a class="hqz-core-card" href="org.html"><div class="hqz-core-art">会</div><div><h3>组织</h3><p>21条 · 侨团与机构</p></div><i class="hqz-core-arrow">›</i></a>
+      <a class="hqz-core-card" href="event.html"><div class="hqz-core-art">史</div><div><h3>事件</h3><p>83条 · 历史片段</p></div><i class="hqz-core-arrow">›</i></a>
+      <a class="hqz-core-card" href="place.html"><div class="hqz-core-art">地</div><div><h3>地点</h3><p>140条 · 侨乡籍贯</p></div><i class="hqz-core-arrow">›</i></a>
+      <a class="hqz-core-card" href="qiaopi.html"><div class="hqz-core-art">信</div><div><h3>侨批</h3><p>1份 · 数字档案示例</p></div><i class="hqz-core-arrow">›</i></a>
+    </div>
+    <div class="hqz-home-columns" data-hqz-feature-list>
+      <section class="hqz-home-col"><div class="hqz-section-head"><h2>杰出人物</h2><a href="person.html">查看更多 →</a></div><div data-hqz-feature-person></div></section>
+      <section class="hqz-home-col"><div class="hqz-section-head"><h2>侨团与事件</h2><a href="org.html">查看更多 →</a></div><div data-hqz-feature-org></div><div data-hqz-feature-event></div></section>
+      <section class="hqz-home-col"><div class="hqz-section-head"><h2>人物地点关联地图</h2><a href="place.html">进入地点档案 →</a></div><div class="hqz-home-map"><div class="hqz-map-canvas" aria-label="人物地点关联地图"></div></div><p class="hqz-map-foot">地图标记关联人物的籍贯与侨居地；连线表示两地有共同人物，不代表迁徙方向。点击地点或线条查看人物。</p></section>
+    </div>
+    <div class="hqz-more-row"><div><h3>一封侨批里的家书与时代</h3><p>1946年黄清池致施氏贤内助批信：原文、译文、人物关系与影像标注。</p></div><a href="qiaopi.html">打开侨批档案 →</a></div>
+  </div>
+</section>
+<!-- a9 页脚 -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand"><h3>华侨志数据库</h3><p>五书人物、组织、事件与地点资料</p></div>
+      <div class="foot-col"><h5>浏览</h5><a href="person.html">人物</a><a href="org.html">组织</a><a href="event.html">事件</a><a href="place.html">地点</a><a href="qiaopi.html">侨批</a></div>
+      <div class="foot-col"><h5>工具</h5><a href="search.html">全库检索</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 华侨志数据库</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+
+
+<script src="assets/api-static.js"></script>
+<script src="assets/home-data.js?v=final-showcase-v1-20260909"></script>
+<script>window.HQZ_HOME_SKIP_DEMO=true;</script>
+<script>
+/* ---------- 演示提示 ---------- */
+let toastTimer;
+function demoTip(name){
+  const t=document.getElementById('toast');
+  t.textContent='【Demo】'+name+'将在 MVP 版本中开放';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function doSearch(){
+  const v=document.getElementById('kw').value.trim();
+  if(v) location.href='search.html?q='+encodeURIComponent(v);
+  else demoTip('请输入关键词后再搜索');
+}
+/* ---------- 数字滚动动画 ---------- */
+function countUp(el){
+  const target=+el.dataset.count;
+  const dur=1600,t0=performance.now();
+  function tick(now){
+    const p=Math.min((now-t0)/dur,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*ease).toLocaleString();
+    if(p<1)requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const counted=new WeakSet();
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('[data-count]').forEach(el=>{
+        if(!counted.has(el)){counted.add(el);countUp(el);}
+      });
+      if(e.target.dataset&&e.target.dataset.count!==undefined&&!counted.has(e.target)){
+        counted.add(e.target);countUp(e.target);
+      }
+    }
+  });
+},{threshold:.35});
+document.querySelectorAll('.hero-stats,.stats-grid').forEach(el=>io.observe(el));
+
+/* ---------- a6 世界地图（ECharts 真实可交互） ---------- */
+(function(){
+  if(window.HQZ_HOME_SKIP_DEMO)return;
+  const box=document.getElementById('worldMap');
+  if(!window.echarts||!echarts.getMap('world')){
+    box.style.display='none';
+    document.getElementById('mapFallback').style.display='flex';
+    return;
+  }
+  const chart=echarts.init(box);
+  /* 粤闽侨乡出发地 */
+  const origins=[
+    {name:'广州',coord:[113.26,23.13],lp:'left'},
+    {name:'江门（台山）',coord:[112.79,22.05],lp:'bottom'},
+    {name:'汕头',coord:[116.68,23.30],lp:'right'},
+    {name:'泉州',coord:[118.68,24.95],lp:'top'},
+    {name:'厦门',coord:[118.06,24.40],lp:'right'},
+    {name:'福州',coord:[119.32,26.32],lp:'right'}
+  ];
+  const originMap={};origins.forEach(o=>originMap[o.name]=o.coord);
+  /* 全球 25 个华侨侨居地 */
+  const dests=[
+    /* 东南亚 8 */
+    {name:'新加坡',coord:[103.85,1.29],value:486,from:'厦门'},
+    {name:'吉隆坡',coord:[101.69,3.14],value:208,from:'广州'},
+    {name:'槟城',coord:[100.33,5.41],value:176,from:'汕头'},
+    {name:'曼谷',coord:[100.50,13.76],value:224,from:'汕头'},
+    {name:'雅加达（巴达维亚）',coord:[106.85,-6.21],value:154,from:'厦门'},
+    {name:'西贡（胡志明市）',coord:[106.63,10.82],value:142,from:'广州'},
+    {name:'马尼拉',coord:[120.98,14.60],value:187,from:'泉州'},
+    {name:'仰光',coord:[96.16,16.84],value:92,from:'厦门'},
+    /* 东亚 2 */
+    {name:'横滨',coord:[139.64,35.44],value:86,from:'厦门'},
+    {name:'长崎',coord:[129.87,32.75],value:44,from:'福州'},
+    /* 北美 5 */
+    {name:'旧金山',coord:[-122.42,37.77],value:352,from:'江门（台山）'},
+    {name:'洛杉矶',coord:[-118.24,34.05],value:198,from:'江门（台山）'},
+    {name:'纽约',coord:[-74.01,40.71],value:164,from:'广州'},
+    {name:'檀香山',coord:[-157.86,21.31],value:118,from:'广州'},
+    {name:'温哥华',coord:[-123.12,49.28],value:176,from:'江门（台山）'},
+    /* 拉美加勒比 3 */
+    {name:'哈瓦那',coord:[-82.38,23.11],value:96,from:'江门（台山）'},
+    {name:'利马',coord:[-77.04,-12.05],value:128,from:'广州'},
+    {name:'巴拿马城',coord:[-79.52,8.98],value:74,from:'广州'},
+    /* 大洋洲 2 */
+    {name:'悉尼',coord:[151.21,-33.87],value:146,from:'广州'},
+    {name:'墨尔本',coord:[144.96,-37.81],value:118,from:'江门（台山）'},
+    /* 欧洲 3 */
+    {name:'伦敦',coord:[-0.13,51.51],value:88,from:'广州'},
+    {name:'巴黎',coord:[2.35,48.86],value:66,from:'泉州'},
+    {name:'鹿特丹',coord:[4.48,51.92],value:39,from:'广州'},
+    /* 非洲印度洋 2 */
+    {name:'路易港（毛里求斯）',coord:[57.50,-20.16],value:76,from:'广州'},
+    {name:'约翰内斯堡',coord:[28.05,-26.20],value:41,from:'广州'}
+  ];
+  chart.setOption({
+    backgroundColor:'transparent',
+    tooltip:{
+      trigger:'item',
+      backgroundColor:'rgba(58,42,19,.94)',
+      borderColor:'#b08d57',
+      textStyle:{color:'#f3e9d2',fontSize:13},
+      formatter:p=>{
+        if(p.seriesType==='lines')
+          return '迁徙路线：'+p.data.fromName+' → '+p.data.toName;
+        if(p.seriesType==='effectScatter')
+          return '<b style="font-size:14px">'+p.name+'</b><br>收录记录：<b>'+p.data.value[2].toLocaleString()+'</b> 条';
+        return '<b>'+p.name+'</b><br><span style="opacity:.75">粤闽侨乡 · 出发地</span>';
+      }
+    },
+    geo:{
+      map:'world',roam:true,zoom:1.05,
+      center:[55,26],
+      itemStyle:{areaColor:'#efe6cf',borderColor:'#b6a37c',borderWidth:.6},
+      emphasis:{itemStyle:{areaColor:'#e3d3ac'},label:{show:false}},
+      scaleLimit:{min:.8,max:6}
+    },
+    series:[
+      /* 迁徙路线 + 缓慢流光粒子 */
+      {
+        type:'lines',coordinateSystem:'geo',z:2,silent:false,
+        lineStyle:{color:'#8a6a3a',width:.5,opacity:.18,curveness:.32},
+        effect:{show:true,period:16,trailLength:.55,color:'#c9a35e',symbol:'circle',symbolSize:2.4},
+        data:dests.map(d=>({coords:[originMap[d.from],d.coord],fromName:d.from,toName:d.name}))
+      },
+      /* 国外侨居地（涟漪呼吸点） */
+      {
+        type:'effectScatter',coordinateSystem:'geo',z:3,
+        rippleEffect:{brushType:'stroke',scale:2.6},
+        symbolSize:v=>Math.sqrt(v[2])/2.6,
+        itemStyle:{color:'#6d4c24',borderColor:'#f6f0e2',borderWidth:.8,shadowBlur:5,shadowColor:'rgba(109,76,36,.5)'},
+        label:{show:false},
+        emphasis:{scale:1.6,label:{show:true,position:'right',formatter:'{b}',fontSize:12,color:'#4a3315',fontWeight:'bold',fontFamily:'Noto Serif SC,serif'}},
+        data:dests.map(d=>({name:d.name,value:[...d.coord,d.value]}))
+      },
+      /* 侨乡出发地 */
+      {
+        type:'scatter',coordinateSystem:'geo',z:4,
+        symbolSize:11,
+        itemStyle:{color:'#4a3315',borderColor:'#d8c39a',borderWidth:1.5},
+        label:{show:true,formatter:'{b}',fontSize:11,fontWeight:'bold',color:'#4a3315',fontFamily:'Noto Serif SC,serif',textBorderColor:'#f6f0e2',textBorderWidth:2},
+        data:origins.map(o=>({name:o.name,value:o.coord,label:{position:o.lp,distance:4}}))
+      }
+    ]
+  });
+  window.addEventListener('resize',()=>chart.resize());
+})();
+</script>
+<script src="assets/site-enhance.js" defer></script><script>window.HQZ_HIDE_PROVENANCE=true;</script><script src="assets/simple-person-place-map.js" defer></script></body>
+</html>

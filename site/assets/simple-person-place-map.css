@@ -1,0 +1,32 @@
+/* Simple association map: points → people → person detail. Reuses Qimai map palette. */
+.hqz-home-map,.hqz-place-map{position:relative;isolation:isolate}
+.hqz-home-map{min-height:370px;height:370px}
+.hqz-home-map .hqz-map-canvas{min-height:370px;height:100%}
+.hqz-place-map .hqz-map-canvas{height:490px;min-height:490px}
+.hqz-assoc-zoom{position:absolute;bottom:12px;left:12px;display:grid;gap:2px;z-index:6}
+.hqz-assoc-zoom button{width:32px;height:30px;background:#fffaf1;border:1px solid #d6c29d;border-radius:4px;color:#654526;font-size:18px;cursor:pointer}
+.hqz-person-place-panel{position:absolute;right:10px;top:62px;bottom:10px;width:min(290px,calc(100% - 24px));z-index:8;border:1px solid #c9aa7c;background:#fffaf0f2;backdrop-filter:blur(6px);box-shadow:0 14px 34px #51361d36;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:0;color:#50371f}
+.hqz-map-panel-head{display:flex;align-items:start;justify-content:space-between;gap:8px}
+.hqz-map-panel-head strong{font-size:17px;line-height:1.5;display:block;word-break:break-word}
+.hqz-map-panel-head small{display:block;color:#977655;font-size:12px;margin-top:3px}
+.hqz-map-panel-head button{flex:0 0 28px;border:1px solid #ddcaaa;background:#faf0e0;border-radius:4px;font-size:19px;cursor:pointer}
+.hqz-person-map-filter{width:100%;min-width:0;padding:8px;border:1px solid #d9c4a0;background:#fffdf6;border-radius:5px;outline-offset:2px;font-size:13px}
+.hqz-person-map-list{overflow-y:auto;min-height:0;flex:1;display:grid;align-content:start;gap:5px}
+.hqz-person-map-list a{padding:8px 6px;color:#56391e;border-bottom:1px solid #e7d6ba;text-decoration:none;display:flex;justify-content:space-between;gap:8px;line-height:1.45;font-size:13px}
+.hqz-person-map-list a:hover,.hqz-person-map-list a:focus-visible{background:#f2e2c7}
+.hqz-person-map-list span{font-size:11px;color:#967453;white-space:nowrap}
+.hqz-map-panel-note{font-size:11px;line-height:1.65;color:#866b4a;margin:0}
+.hqz-home-col .hqz-map-foot{line-height:1.65;font-size:11px}
+.hqz-place-map .hqz-map-caption{font-size:10px}
+.hqz-map-place-select{font-size:12px;border:1px solid #c9b18b;border-radius:6px;color:#604221;background:#fffaf0;max-width:148px;min-width:96px;padding:4px;cursor:pointer}
+.hqz-home-map .hqz-map-toolbar{top:8px;left:8px;flex-wrap:wrap;max-width:calc(100% - 20px)}
+.hqz-place-map .hqz-map-toolbar{top:8px;left:8px}
+@media(max-width:800px){
+ .hqz-home-map{min-height:330px;height:330px}
+ .hqz-home-map .hqz-map-canvas{min-height:330px}
+ .hqz-person-place-panel{width:min(270px,calc(100% - 24px));top:56px;bottom:8px}
+}
+@media(max-width:440px){
+ .hqz-person-place-panel{right:6px;left:6px;width:auto;top:48px;bottom:5px}
+ .hqz-map-panel-head strong{font-size:15px}
+}
