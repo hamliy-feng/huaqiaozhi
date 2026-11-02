@@ -1,4 +1,4 @@
-类型,真实ID,名称,状态,图片路径,搜索链接,图片来源
+﻿类型,真实ID,名称,状态,图片路径,搜索链接,图片来源
 person,hqz_p_100322,伍大慰,no_matching_media,,https://www.google.com.hk/search?tbm=isch&q=%E4%BC%8D%E5%A4%A7%E6%85%B0%20%E5%8D%8E%E4%BE%A8,
 person,hqz_p_000454,伍舜德,no_matching_media,,https://www.google.com.hk/search?tbm=isch&q=%E4%BC%8D%E8%88%9C%E5%BE%B7%20%E5%8D%8E%E4%BE%A8,
 person,hqz_p_000622,伍连德,ready,assets/media/hqz_p_000622.webp,https://www.google.com.hk/search?tbm=isch&q=伍连德,https://commons.wikimedia.org/wiki/File:Wu_Lien-teh_-_c._1910%E2%80%931915.jpg
