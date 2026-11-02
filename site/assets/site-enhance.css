@@ -100,3 +100,18 @@ body[data-page="place"] .hqz-place-detail{display:none!important}
  body[data-page="place"] .hqz-place-map .hqz-map-canvas{height:440px;min-height:440px}
  body[data-page="place"] .hqz-place-list{grid-row:2;max-height:300px}
 }
+
+/* Atlas directory: only the 36 associated map nodes are interactive; preserve original 140 place records below. */
+body[data-page="place"] .hqz-map-linked-list{display:grid;gap:3px}
+body[data-page="place"] .hqz-map-linked-list button{display:flex;width:100%;gap:10px;justify-content:space-between;align-items:center;text-align:left;border:1px solid transparent;border-bottom-color:#e5d6bd;border-radius:6px;background:transparent;padding:9px 7px;color:#5c4024;font:inherit;cursor:pointer}
+body[data-page="place"] .hqz-map-linked-list button strong{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+body[data-page="place"] .hqz-map-linked-list button span{font-size:11px;color:#9b7a54;flex:0 0 auto}
+body[data-page="place"] .hqz-map-linked-list button:hover,body[data-page="place"] .hqz-map-linked-list button:focus-visible{background:#f0e4cf;outline-color:#a77f4d}
+body[data-page="place"] .hqz-map-linked-list button.active{background:#e8d5b7;border-color:#c7a778}
+body[data-page="place"] .hqz-legacy-place-index{border-top:1px solid #d9c29e;margin-top:15px;padding-top:12px}
+body[data-page="place"] .hqz-legacy-place-index summary{cursor:pointer;padding:7px 2px;color:#73502a;font-size:13px;font-weight:600}
+body[data-page="place"] .hqz-legacy-place-index .city-grid{margin-top:8px}
+body[data-page="place"] .hqz-place-map{min-height:640px}
+body[data-page="place"] .hqz-place-map .hqz-map-canvas{height:640px;min-height:640px}
+body[data-page="place"] .hqz-place-list{max-height:640px}
+@media(max-width:800px){body[data-page="place"] .hqz-place-map{min-height:440px}body[data-page="place"] .hqz-place-map .hqz-map-canvas{height:440px;min-height:440px}body[data-page="place"] .hqz-place-list{max-height:360px}}

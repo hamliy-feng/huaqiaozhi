@@ -96,21 +96,38 @@
      if(params.has('map'))panel(frame,selected.name,selected.personIds,names,'点击姓名查看人物档案');
      chart.on('click',p=>{
        if(p.seriesType==='scatter'&&p.data?.id){
-         selected=byId.get(p.data.id);
-         chart.setOption({series:[{data:selectedLines()},{data:points.map(x=>({...x,symbolSize:x.id===selected.id?16:undefined}))}]});
-         panel(frame,selected.name,selected.personIds,names,'点击姓名进入该人物档案');
+         host.__hqzMap?.selectPlace(p.data.id);
        }else if(p.seriesType==='lines'&&p.data?.personIds){
          panel(frame,p.data.name,p.data.personIds,names,'两地共享同一人物的地点关联；不表示迁徙方向');
        }
      });
      const obs=new ResizeObserver(()=>chart.resize());obs.observe(host);
      host.dataset.ready='yes';host.dataset.points=String(nodes.length);host.dataset.links=String(edges.length);
+     const markActive=()=>{
+       document.querySelectorAll('.hqz-map-linked-list button[data-map-id]').forEach(btn=>{
+         const active=btn.dataset.mapId===selected.id;
+         btn.classList.toggle('active',active);
+         btn.setAttribute('aria-pressed',String(active));
+       });
+     };
      host.__hqzMap={chart,selectPlace:(id)=>{
        const item=byId.get(id);if(!item)return false;
-       selected=item;chart.setOption({series:[{data:selectedLines()},{data:points}]});
-       panel(frame,item.name,item.personIds,names,'点击姓名进入该人物档案');return true;
+       selected=item;
+       chart.setOption({series:[{data:selectedLines()},{data:points.map(p=>({...p,symbolSize:p.id===selected.id?16:undefined}))}]});
+       panel(frame,item.name,item.personIds,names,'点击姓名进入该人物档案');
+       markActive();return true;
      }};
      if(document.body?.dataset.page==='place'){
+       const directory=document.querySelector('.hqz-map-linked-list');
+       if(directory){
+         const ordered=nodes.slice().sort((a,b)=>b.person_count-a.person_count||a.name.localeCompare(b.name,'zh'));
+         directory.innerHTML=ordered.map(item=>'<button type="button" data-map-id="'+esc(item.id)+'" aria-pressed="false"><strong>'+esc(item.name)+'</strong><span>'+Number(item.person_count)+'人</span></button>').join('');
+         directory.addEventListener('click',event=>{
+           const btn=event.target.closest('button[data-map-id]');
+           if(btn)host.__hqzMap?.selectPlace(btn.dataset.mapId);
+         });
+         markActive();
+       }
        const list=document.querySelector('.hqz-place-list .city-grid');
        list?.addEventListener('click',event=>{
          const card=event.target.closest('.city-card');if(!card)return;
