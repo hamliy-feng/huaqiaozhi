@@ -110,6 +110,15 @@
        selected=item;chart.setOption({series:[{data:selectedLines()},{data:points}]});
        panel(frame,item.name,item.personIds,names,'点击姓名进入该人物档案');return true;
      }};
+     if(document.body?.dataset.page==='place'){
+       const list=document.querySelector('.hqz-place-list .city-grid');
+       list?.addEventListener('click',event=>{
+         const card=event.target.closest('.city-card');if(!card)return;
+         const name=card.querySelector('strong')?.textContent?.trim();
+         const item=nodes.find(x=>x.name===name);
+         if(item)host.__hqzMap?.selectPlace(item.id);
+       });
+     }
    }catch(err){
      host.dataset.ready='error';host.innerHTML='<div class="hqz-map-fallback">地图暂不可用，请从人物目录浏览。</div>';
      console.warn('HQZ association map',err);
