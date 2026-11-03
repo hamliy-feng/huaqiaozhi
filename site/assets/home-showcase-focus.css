@@ -6,7 +6,16 @@
   background:linear-gradient(155deg,#f8f4ea 0%,#f3eadb 65%,#f8f3e9 100%);
 }
 .hqz-showcase .hqz-shell{width:min(1580px,calc(100% - 64px));margin:0 auto}
-.hqz-showcase .hqz-core-grid,.hqz-showcase .hqz-photo-cities{display:none!important}
+.hqz-showcase .hqz-core-grid{display:none!important}
+/* Restore the existing eight real city photographs in one row below the three-column panel. */
+.hqz-showcase .hqz-photo-cities{display:block!important;margin:36px 0 10px}
+.hqz-showcase .hqz-photo-cities .hqz-section-head{margin:0 0 16px}
+.hqz-showcase .hqz-photo-city-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+.hqz-showcase .hqz-photo-city{min-width:0}
+.hqz-showcase .hqz-photo-city img{height:126px;width:100%;object-fit:cover}
+.hqz-showcase .hqz-photo-city strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:9px 10px}
+@media(max-width:1200px){.hqz-showcase .hqz-photo-city-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:680px){.hqz-showcase .hqz-photo-city-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hqz-showcase .hqz-photo-cities{margin-top:22px}}
 .hqz-showcase .hqz-home-columns{
   display:grid!important;
   grid-template-columns:minmax(0,29fr) minmax(0,29fr) minmax(0,42fr)!important;
