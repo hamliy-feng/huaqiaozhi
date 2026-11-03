@@ -76,12 +76,14 @@
       const [person,org,event]=await Promise.all(['person','org','event'].map(t=>fetch('data/'+t+'-index.json').then(r=>r.json())));
       function list(which,items){const host=$('[data-hqz-feature-'+which+']');if(!host)return;host.innerHTML=items.map(item=>{
         const n=item.name||item.title||'',detail=(item.bio_short||item.summary||'').replace(/(?:资料出处|来源)[：:].*$/u,'').slice(0,76);
-        return '<a class="hqz-feature-row" href="'+which+'.html?id='+encodeURIComponent(item.id)+'"><span class="hqz-feature-logo">'+((item.cover_url&&item.cover_kind==='photo_or_recorded_source')?'<img loading="lazy" src="'+e(item.cover_url)+'" alt="'+e(n)+'">':e(n.slice(0,1)))+'</span><span><strong>'+e(n)+'</strong><small>'+e(detail)+'</small></span></a>'
+        return '<a class="hqz-feature-row" href="'+which+'.html?id='+encodeURIComponent(item.id)+'"><span class="hqz-feature-logo">'+((item.cover_url&&(item.cover_kind==='photo_or_recorded_source'||item.cover_kind==='real_building'))?'<img loading="lazy" src="'+e(item.cover_url)+'" alt="'+e(n)+'">':e(n.slice(0,1)))+'</span><span><strong>'+e(n)+'</strong><small>'+e(detail)+'</small></span></a>'
       }).join('')}
       const priority=['陈宜禧','伍连德','雷洁琼','林梧桐'];
       const featured=priority.map(n=>person.find(p=>p.name===n)).filter(Boolean).slice(0,4);
       list('person', [...featured,...person.filter(x=>!featured.some(y=>x.id===y.id))].slice(0,4));
-      list('org', org.filter(o=>/会馆|公会|商会/.test(o.name)).slice(0,2));
+      const featuredOrgNames=['马华公会','屯门乡事委员会'];
+      list('org', featuredOrgNames.map(name=>org.find(o=>o.name===name))
+        .filter(o=>o?.cover_kind==='real_building'&&o?.cover_url));
       list('event', event.filter(o=>(o.title||'').length<36).slice(0,2));
       target.dataset.loaded='yes';
     }catch(err){target.innerHTML='<p class="hqz-index-note">精选条目暂不可加载，请使用上方四个入口浏览。</p>';console.warn(err)}
